@@ -1658,8 +1658,10 @@ func (r *ResourceManager) IsAuthorized(ctx context.Context, resourceAttributes *
 	// based on the namespace field in the request.
 	errlist := make([]error, 0)
 	userIdentity := ""
+	glog.Info("#authenticators:%v\n", len(r.authenticators))
 	for _, auth := range r.authenticators {
 		identity, err := auth.GetUserIdentity(ctx)
+		glog.Info("Identitiy:%v, err:+%v\n", identity, err)
 		if err == nil {
 			userIdentity = identity
 
@@ -1671,7 +1673,7 @@ func (r *ResourceManager) IsAuthorized(ctx context.Context, resourceAttributes *
 		return util.NewUnauthenticatedError(utilerrors.NewAggregate(errlist), "Failed to check authorization. User identity is empty in the request header")
 	}
 
-	glog.Infof("User: %s, ResourceAttributes: %+v", userIdentity, resourceAttributes)
+	glog.Infof("User: %s, ResourceAttributes: %+v", jsonalized(userIdentity), jsonalized(resourceAttributes))
 	glog.Info("Authorizing request")
 	result, err := r.subjectAccessReviewClient.Create(
 		ctx,
@@ -1683,6 +1685,7 @@ func (r *ResourceManager) IsAuthorized(ctx context.Context, resourceAttributes *
 		},
 		v1.CreateOptions{},
 	)
+	glog.Infof("resources:+%v, user:+%v, result:%+v\n", jsonalized(resourceAttributes), jsonalized(userIdentity), jsonalized(result))
 	if err != nil {
 		if netError, ok := err.(net.Error); ok && netError.Timeout() {
 			reportErr := util.NewUnavailableServerError(
@@ -1717,6 +1720,11 @@ func (r *ResourceManager) IsAuthorized(ctx context.Context, resourceAttributes *
 	}
 	glog.Infof("Authorized user '%s': %+v", userIdentity, resourceAttributes)
 	return nil
+}
+
+func jsonalized(v interface{}) string {
+	b, _ := json.Marshal(v)
+	return string(b)
 }
 
 // Fetches namespace that an experiment belongs to.
