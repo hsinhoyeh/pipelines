@@ -828,8 +828,8 @@ func (s *PipelineStore) GetPipelineVersionWithStatus(versionId string, status mo
 	sql, args, err := sq.
 		Select(pipelineVersionColumns...).
 		From("pipeline_versions").
-		Where(sq.And{sq.Eq{"pipeline_versions.UUID": versionId} /*sq.Eq{"pipeline_versions.Status": status}*/}).
-		Limit(1).
+		//Where( /*sq.And{sq.Eq{"pipeline_versions.UUID": versionId} sq.Eq{"pipeline_versions.Status": status}}*/ ).
+		//Limit(1).
 		ToSql()
 	if err != nil {
 		return nil, util.NewInternalServerError(err, "Failed to create query to fetch a pipeline version %v with status %v", versionId, string(status))
@@ -844,6 +844,9 @@ func (s *PipelineStore) GetPipelineVersionWithStatus(versionId string, status mo
 
 	// Parse results
 	versions, err := s.scanPipelineVersionsRows(r)
+	for _, version := range versions {
+		fmt.Printf("pipelineversions-uuid:%+v\n", version.UUID)
+	}
 	if err != nil || len(versions) > 1 {
 		return nil, util.NewInternalServerError(err, "Failed to parse a pipeline version %v from SQL response with status %v", versionId, string(status))
 	}
