@@ -828,7 +828,7 @@ func (s *PipelineStore) GetPipelineVersionWithStatus(versionId string, status mo
 	sql, args, err := sq.
 		Select(pipelineVersionColumns...).
 		From("pipeline_versions").
-		Where(sq.And{sq.Eq{"pipeline_versions.UUID": versionId}, sq.Eq{"pipeline_versions.Status": status}}).
+		Where(sq.And{sq.Eq{"pipeline_versions.UUID": versionId} /*sq.Eq{"pipeline_versions.Status": status}*/}).
 		Limit(1).
 		ToSql()
 	if err != nil {

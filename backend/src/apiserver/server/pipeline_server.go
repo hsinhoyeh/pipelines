@@ -20,6 +20,7 @@ import (
 	"net/url"
 	"path"
 
+	"github.com/golang/glog"
 	"github.com/golang/protobuf/ptypes/empty"
 	apiv1beta1 "github.com/kubeflow/pipelines/backend/api/v1beta1/go_client"
 	apiv2beta1 "github.com/kubeflow/pipelines/backend/api/v2beta1/go_client"
@@ -1000,6 +1001,7 @@ func (s *PipelineServer) canAccessPipelineVersion(ctx context.Context, versionId
 	}
 	pipelineId := ""
 	if versionId != "" {
+		glog.Info("canaccesspipelineveriosn, pipeline:%s, version:%s\n", pipelineId, versionId)
 		pipelineVersion, err := s.resourceManager.GetPipelineVersion(versionId)
 		if err != nil {
 			return util.Wrapf(err, "Failed to access pipeline version %s. Check if it exists", versionId)
