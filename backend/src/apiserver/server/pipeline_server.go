@@ -1001,7 +1001,7 @@ func (s *PipelineServer) canAccessPipelineVersion(ctx context.Context, versionId
 	}
 	pipelineId := ""
 	if versionId != "" {
-		glog.Infof("canaccesspipelineveriosn, pipeline:%s, version:%s\n", pipelineId, versionId)
+		glog.Info("canaccesspipelineveriosn, pipeline:%s, version:%s\n", pipelineId, versionId)
 		pipelineVersion, err := s.resourceManager.GetPipelineVersion(versionId)
 		if err != nil {
 			return util.Wrapf(err, "Failed to access pipeline version %s. Check if it exists", versionId)
