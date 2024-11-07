@@ -850,6 +850,7 @@ func (s *PipelineStore) GetPipelineVersionWithStatus(versionId string, status mo
 	if len(versions) == 0 {
 		return nil, util.NewResourceNotFoundError("PipelineVersion", versionId)
 	}
+	fmt.Printf("GetPipelineVersionWithstatus:%s, status:+%v\n", versions[0].UUID, versions[0].Status)
 	return versions[0], nil
 }
 
